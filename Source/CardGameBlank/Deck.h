@@ -4,24 +4,16 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/Actor.h"
-#include "Board.generated.h"
+#include "Deck.generated.h"
 
 UCLASS()
-class CARDGAMEBLANK_API ABoard : public AActor
+class CARDGAMEBLANK_API ADeck : public AActor
 {
 	GENERATED_BODY()
 	
 public:	
 	// Sets default values for this actor's properties
-	ABoard();
-
-private:
-
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Components", meta = (AllowPrivateAccess = "true"))
-	UStaticMeshComponent* Board;
-
-	float BoardX = 0.f;
-	float BoardY = 0.f;
+	ADeck();
 
 protected:
 	// Called when the game starts or when spawned

@@ -4,9 +4,19 @@
 
 #include "CoreMinimal.h"
 #include "Components/ActorComponent.h"
+#include "Card.h"
 #include "Interact.generated.h"
 
 class UInputComponent;
+class AHighlightBlock;
+
+struct FCurrentActorDetails
+{
+	AActor* currentActor;
+	FVector Location;
+	float XPosition;
+	float YPosition;
+};
 
 UCLASS( ClassGroup=(Custom), meta=(BlueprintSpawnableComponent) )
 class CARDGAMEBLANK_API UInteract : public UActorComponent
@@ -19,6 +29,15 @@ public:
 	void SetUpInputComponent(UInputComponent* PlayerInputComponent);
 
 private:
+
+	FCurrentActorDetails CurrentActor;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Block", meta = (AllowPrivateAccess = "true"))
+	TSubclassOf<AHighlightBlock> BlockClass;
+
+	UPROPERTY(BlueprintReadOnly, BlueprintReadOnly, Category = "Block", meta = (AllowPrivateAccess = "true"))
+	AHighlightBlock* Block;
+
 	void PerformRayCastFromMouse();
 	void TraceForBlock(const FVector& Start, const FVector& End, bool bDrawDebugHelpers);
 

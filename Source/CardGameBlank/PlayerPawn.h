@@ -10,6 +10,7 @@ class UCameraComponent;
 class UCapsuleComponent;
 class UInputComponent;
 class UInteract;
+class UPlayerHand;
 
 UCLASS()
 class CARDGAMEBLANK_API APlayerPawn : public APawn
@@ -32,8 +33,12 @@ private:
 	UCameraComponent* PlayerCamera;
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Components", meta = (AllowPrivateAccess = "true"))
+	USceneComponent* PlayerHandSpawnLocation;
+
+	UPROPERTY(BlueprintReadOnly, BlueprintReadOnly, Category = "Components", meta = (AllowPrivateAccess = "true"))
 	UInteract* PlayerInteractComponent;
 
+	UPlayerHand* PlayerHand;
 
 
 protected:

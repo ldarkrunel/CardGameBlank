@@ -19,12 +19,15 @@ void ABoard::BeginPlay()
 {
 	Super::BeginPlay();
 
-	GameBoard = GetOwner()->FindComponentByClass<UStaticMeshComponent>();
+	//GameBoard = GetOwner()->FindComponentByClass<UStaticMeshComponent>();
 
-	FBoxSphereBounds BoardBoxBounds = GameBoard->Bounds;
+	FBoxSphereBounds BoardBoxBounds = Board->Bounds;
 	BoardX = BoardBoxBounds.GetBox().GetSize().X;
 	BoardY = BoardBoxBounds.GetBox().GetSize().Y;
-	
+
+	UE_LOG(LogTemp, Warning, TEXT("Board x size: %f"), BoardX);
+	UE_LOG(LogTemp, Warning, TEXT("Board y size: %f"), BoardY);
+	//UE_LOG(LogTemp, Warning, TEXT("Is working"));
 }
 
 // Called every frame

@@ -4,36 +4,20 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/Actor.h"
-#include "Card.generated.h"
-
-class ULevelSequence;
-class ULevelSequencePlayer;
+#include "HighlightBlock.generated.h"
 
 UCLASS()
-class CARDGAMEBLANK_API ACard : public AActor
+class CARDGAMEBLANK_API AHighlightBlock : public AActor
 {
 	GENERATED_BODY()
 	
 public:	
 	// Sets default values for this actor's properties
-	ACard();
-
-	FVector GetSize();
+	AHighlightBlock();
 
 private:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Components", meta = (AllowPrivateAccess = "true"))
 	UStaticMeshComponent* BaseMesh;
-
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Animation", meta = (AllowPrivateAccess = "true"))
-	ULevelSequence* DrawCard_Anim;
-
-	UPROPERTY(BlueprintReadOnly, BlueprintReadOnly, Category = "Animation", meta = (AllowPrivateAccess = "true"))
-	ULevelSequencePlayer* SequencePlayer;
-
-	TScriptDelegate<FWeakObjectPtr> DrawAnimationFinished;
-
-
-	void OnCardDrawn();
 
 protected:
 	// Called when the game starts or when spawned

@@ -1,6 +1,7 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
 #include "PlayerPawn.h"
+#include "PlayerHand.h"
 #include "Camera/CameraComponent.h"
 
 // Sets default values
@@ -11,14 +12,22 @@ APlayerPawn::APlayerPawn()
 
 	PlayerCamera = CreateDefaultSubobject<UCameraComponent>(TEXT("Base Mesh"));
 	RootComponent = PlayerCamera;
+
+	PlayerHandSpawnLocation = CreateDefaultSubobject<USceneComponent>(TEXT("Player Hand"));
+	PlayerHandSpawnLocation->SetupAttachment(PlayerCamera);
 }
 
 // Called when the game starts or when spawned
 void APlayerPawn::BeginPlay()
 {
 	Super::BeginPlay();
-	UE_LOG(LogTemp, Warning, TEXT("test?"));
-	
+
+	PlayerHand = FindComponentByClass<UPlayerHand>();
+
+	FTransform test = PlayerHandSpawnLocation->GetComponentTransform();
+	if (PlayerHand) {
+		PlayerHand->SpawnHand(PlayerHandSpawnLocation->GetComponentTransform().GetLocation(), PlayerCamera->GetComponentRotation());
+	}
 }
 
 // Called every frame
