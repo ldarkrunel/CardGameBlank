@@ -30,9 +30,7 @@ private:
 	UPROPERTY(BlueprintReadOnly, BlueprintReadOnly, Category = "Animation", meta = (AllowPrivateAccess = "true"))
 	ULevelSequencePlayer* SequencePlayer;
 
-	TScriptDelegate<FWeakObjectPtr> DrawAnimationFinished;
-
-
+	UFUNCTION()
 	void OnCardDrawn();
 
 protected:

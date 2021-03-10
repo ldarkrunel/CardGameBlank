@@ -2,10 +2,12 @@
 
 #pragma once
 
+
 #include "CoreMinimal.h"
 #include "Components/ActorComponent.h"
 #include "Card.h"
 #include "Interact.generated.h"
+
 
 class UInputComponent;
 class AHighlightBlock;

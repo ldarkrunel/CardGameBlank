@@ -1,9 +1,11 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
+#include "Card.h"
 #include "LevelSequence.h"
 #include "LevelSequencePlayer.h"
+#include "LevelSequenceActor.h"
 #include "MovieScene.h"
-#include "Card.h"
+
 
 // Sets default values
 
@@ -24,23 +26,31 @@ void ACard::BeginPlay()
 {
 	Super::BeginPlay();
 
-	ALevelSequenceActor* SequenceActor;
+	ALevelSequenceActor* SequenceActor = nullptr;
 
 	if (DrawCard_Anim && !SequencePlayer)
 		SequencePlayer = ULevelSequencePlayer::CreateLevelSequencePlayer(GetWorld(), DrawCard_Anim, FMovieSceneSequencePlaybackSettings(), OUT SequenceActor);
 
-	if (SequencePlayer)
+	if (SequencePlayer) {
+		UE_LOG(LogTemp, Warning, TEXT("actor name: %s"), *SequenceActor->GetName());
+		//SequenceActor->AddBinding(NULL, this);
+		//SequenceActor->GetFName();
+
+
+
 		SequencePlayer->Play();
+	}
 
-	DrawAnimationFinished.BindUFunction(this, "OnCardDrawn");
-	SequencePlayer->OnFinished.Add(DrawAnimationFinished);
+	
 
-	//SequencePlayer->OnFinished().Add(&ACard::OnCardDrawn);
+
+	//SequencePlayer->OnFinished.AddDynamic(this, &ACard::OnCardDrawn);
+
 }
 
 void ACard::OnCardDrawn()
 {
-	UE_LOG(LogTemp, Warning, TEXT("Card has finished being drawn"));
+	//UE_LOG(LogTemp, Warning, TEXT("Card has finished being drawn"));
 }
 
 // Called every frame
