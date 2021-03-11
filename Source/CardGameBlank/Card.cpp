@@ -17,8 +17,6 @@ ACard::ACard()
 
 	BaseMesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("Base Mesh"));
 	RootComponent = BaseMesh;
-
-
 }
 
 // Called when the game starts or when spawned
@@ -32,17 +30,17 @@ void ACard::BeginPlay()
 		SequencePlayer = ULevelSequencePlayer::CreateLevelSequencePlayer(GetWorld(), DrawCard_Anim, FMovieSceneSequencePlaybackSettings(), OUT SequenceActor);
 
 	if (SequencePlayer) {
-		UE_LOG(LogTemp, Warning, TEXT("actor name: %s"), *SequenceActor->GetName());
-		//SequenceActor->AddBinding(NULL, this);
-		//SequenceActor->GetFName();
 
+		ULevelSequence* LevelSequence = SequenceActor->GetSequence();
+		TArray<FMovieSceneBinding> Bindings = LevelSequence->GetMovieScene()->GetBindings();
 
+		FMovieSceneObjectBindingID BindingId = FMovieSceneObjectBindingID(Bindings[0].GetObjectGuid(), MovieSceneSequenceID::Root);
+
+		SequenceActor->SetBinding(BindingId, TArray <AActor*> { this });
 
 		SequencePlayer->Play();
+
 	}
-
-	
-
 
 	//SequencePlayer->OnFinished.AddDynamic(this, &ACard::OnCardDrawn);
 

@@ -6,6 +6,8 @@
 #include "GameFramework/Actor.h"
 #include "Deck.generated.h"
 
+class ACard;
+
 UCLASS()
 class CARDGAMEBLANK_API ADeck : public AActor
 {
@@ -14,6 +16,18 @@ class CARDGAMEBLANK_API ADeck : public AActor
 public:	
 	// Sets default values for this actor's properties
 	ADeck();
+
+private:
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Components", meta = (AllowPrivateAccess = "true"))
+	UStaticMeshComponent* BaseMesh;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Card", meta = (AllowPrivateAccess = "true"))
+	TSubclassOf<ACard> CardClass;
+
+	UPROPERTY(BlueprintReadOnly, BlueprintReadOnly, Category = "Card", meta = (AllowPrivateAccess = "true"))
+	ACard* SpawnedCard;
+
+	void SpawnNewCard();
 
 protected:
 	// Called when the game starts or when spawned

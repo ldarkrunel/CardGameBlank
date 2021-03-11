@@ -23,15 +23,12 @@ UInteract::UInteract()
 void UInteract::BeginPlay()
 {
 	Super::BeginPlay();
-	UE_LOG(LogTemp, Warning, TEXT("Interact initialized"));
 
 	if (BlockClass) {
 		FVector SpawnLocation{ 0,0,0 };
 		FRotator SpawnRotation{ 0,0,0 };
-		UE_LOG(LogTemp, Warning, TEXT("card initialized"));
 
 		Block = GetWorld()->SpawnActor<AHighlightBlock>(BlockClass, SpawnLocation, SpawnRotation);
-		//TempCard->SetOwner(this);
 	}
 
 }
