@@ -2,6 +2,7 @@
 
 
 #include "PlayerHand.h"
+#include "Camera/CameraComponent.h"
 #include "Card.h"
 
 
@@ -20,6 +21,12 @@ UPlayerHand::UPlayerHand()
 void UPlayerHand::BeginPlay()
 {
 	Super::BeginPlay();
+
+	TArray<FVector> HandPositions = GetUpdatedCardPositionsInHand(GetWorld()->GetFirstPlayerController()->PlayerCameraManager->GetCameraLocation());
+
+	for (auto position : HandPositions) {
+		UE_LOG(LogTemp, Warning,TEXT("y position: %f"), position.Y);
+	}
 }
 
 
@@ -30,7 +37,7 @@ void UPlayerHand::TickComponent(float DeltaTime, ELevelTick TickType, FActorComp
 
 }
 
-TArray<FVector> UPlayerHand::GetUpdatedCardPositionsInHand(FVector CenterHandPoint, int CurrentHandSize)
+TArray<FVector> UPlayerHand::GetUpdatedCardPositionsInHand(FVector CenterHandPoint)
 {
 	TArray<FVector> CardPositionsInHand;
 
@@ -38,20 +45,20 @@ TArray<FVector> UPlayerHand::GetUpdatedCardPositionsInHand(FVector CenterHandPoi
 		float StartPoint = CenterHandPoint.Y;
 		float localDistanceBetweenCards = MaxDistanceFromOtherCards;
 
-		if (CurrentHandSize * MaxDistanceFromOtherCards > (MaxSpawnDistanceFromCentre * 2)) {
+		if (CardsInHand.Num() * MaxDistanceFromOtherCards > (MaxSpawnDistanceFromCentre * 2)) {
 			StartPoint -= MaxSpawnDistanceFromCentre;
-			localDistanceBetweenCards = (MaxSpawnDistanceFromCentre * 2) / (CurrentHandSize - 1);
+			localDistanceBetweenCards = (MaxSpawnDistanceFromCentre * 2) / (CardsInHand.Num() - 1);
 		}
 		else {
-			if (CurrentHandSize % 2 == 0) {
-				StartPoint -= (((CurrentHandSize - 2) / 2) * MaxDistanceFromOtherCards) + (MaxDistanceFromOtherCards / 2);
+			if (CardsInHand.Num() % 2 == 0) {
+				StartPoint -= (((CardsInHand.Num() - 2) / 2) * MaxDistanceFromOtherCards) + (MaxDistanceFromOtherCards / 2);
 			}
 			else {
-				StartPoint -= (floor(CurrentHandSize / 2)) * MaxDistanceFromOtherCards;
+				StartPoint -= (floor(CardsInHand.Num() / 2)) * MaxDistanceFromOtherCards;
 			}
 		}
 
-		for (int i = 0; i < CurrentHandSize; i++)
+		for (int i = 0; i < CardsInHand.Num(); i++)
 		{
 			FVector CardPosition = FVector{ CenterHandPoint.X,StartPoint + (i * localDistanceBetweenCards),CenterHandPoint.Z };
 			CardPositionsInHand.Add(CardPosition);
@@ -65,12 +72,16 @@ void UPlayerHand::UpdateCardPositions()
 
 }
 
-void UPlayerHand::PickUpCard(int NumCardsToPickup)
+void UPlayerHand::AddCardToHand(ACard* CardToAdd)
 {
+	CardsInHand.Add(CardToAdd);
 
+	//TArray<FVector> HandPositions = GetUpdatedCardPositionsInHand(GetWorld()->GetFirstPlayerController()->PlayerCameraManager->GetCameraLocation());
+
+	//UpdateCardPositions
 }
 
-
+/*
 void UPlayerHand::SpawnHand(FVector SpawnPosition, FRotator CameraRot) {
 	if (CardClass) {
 
@@ -96,5 +107,7 @@ void UPlayerHand::SpawnHand(FVector SpawnPosition, FRotator CameraRot) {
 			Cards.Add(Card);
 		}
 	}
+
 }
+*/
 

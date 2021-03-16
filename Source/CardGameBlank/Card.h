@@ -20,6 +20,11 @@ public:
 
 	FVector GetSize();
 
+	void PlayDrawCardAnimation();
+
+	void UpdateDrawCardAnimationEndLocation(int Channel, int FrameNum, float ModifiedValue);
+
+
 private:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Components", meta = (AllowPrivateAccess = "true"))
 	UStaticMeshComponent* BaseMesh;
@@ -32,6 +37,7 @@ private:
 
 	UFUNCTION()
 	void OnCardDrawn();
+
 
 protected:
 	// Called when the game starts or when spawned

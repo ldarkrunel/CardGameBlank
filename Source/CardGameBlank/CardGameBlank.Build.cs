@@ -8,7 +8,7 @@ public class CardGameBlank : ModuleRules
 	{
 		PCHUsage = PCHUsageMode.UseExplicitOrSharedPCHs;
 	
-		PublicDependencyModuleNames.AddRange(new string[] { "Core", "CoreUObject", "Engine", "InputCore", "LevelSequence", "MovieScene"});
+		PublicDependencyModuleNames.AddRange(new string[] { "Core", "CoreUObject", "Engine", "InputCore", "LevelSequence", "MovieScene", "Sequencer", "MovieSceneTracks"});
 
 		PrivateDependencyModuleNames.AddRange(new string[] { });
 

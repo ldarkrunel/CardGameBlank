@@ -24,6 +24,7 @@ void UInteract::BeginPlay()
 {
 	Super::BeginPlay();
 
+	
 	if (BlockClass) {
 		FVector SpawnLocation{ 0,0,0 };
 		FRotator SpawnRotation{ 0,0,0 };

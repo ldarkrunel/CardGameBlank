@@ -7,6 +7,7 @@
 #include "PlayerHand.generated.h"
 
 class ACard;
+class UCameraComponent;
 
 UCLASS( ClassGroup=(Custom), meta=(BlueprintSpawnableComponent) )
 class CARDGAMEBLANK_API UPlayerHand : public UActorComponent
@@ -19,6 +20,10 @@ public:
 
 	void SpawnHand(FVector SpawnLocation, FRotator CameraRot);
 
+	void AddCardToHand(ACard* CardToAdd);
+
+	TArray<FVector> GetUpdatedCardPositionsInHand(FVector HandCentrePoint);
+
 private:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Card", meta = (AllowPrivateAccess = "true"))
 	TSubclassOf<ACard> CardClass;
@@ -27,7 +32,10 @@ private:
 	TArray<ACard*> Cards;
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Hand", meta = (AllowPrivateAccess = "true"))
-	int HandSize = 5;
+	int MaxHandSize = 6;
+
+	UPROPERTY(BlueprintReadOnly, BlueprintReadOnly, Category = "Hand", meta = (AllowPrivateAccess = "true"))
+	TArray<ACard*> CardsInHand;
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "HandSpawn", meta = (AllowPrivateAccess = "true"))
 	float MaxSpawnDistanceFromCentre = 12.f;
@@ -38,11 +46,7 @@ private:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "HandSpawn", meta = (AllowPrivateAccess = "true"))
 	float DepthDifference = 0.04f;
 
-	TArray<FVector> GetUpdatedCardPositionsInHand(FVector HandCentrePoint, int CurrentHandSize);
-
 	void UpdateCardPositions();
-
-	void PickUpCard(int NumCardsToPickup);
 
 protected:
 	// Called when the game starts

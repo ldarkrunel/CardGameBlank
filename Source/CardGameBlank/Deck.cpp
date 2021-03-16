@@ -27,20 +27,33 @@ void ADeck::BeginPlay()
 void ADeck::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
-
-	bool KeyPressed = GetWorld()->GetFirstPlayerController()->WasInputKeyJustPressed(EKeys::E);
-
-	if (KeyPressed) {
-		UE_LOG(LogTemp, Warning, TEXT("E key was just pressed"));
-		SpawnNewCard();
-	}
-
 }
 
-void ADeck::SpawnNewCard()
+ACard* ADeck::SpawnNewCard()
 {
 	if (CardClass) {
 		SpawnedCard = GetWorld()->SpawnActor<ACard>(CardClass, GetTransform().GetLocation(), GetTransform().GetRotation().Rotator());
+		return SpawnedCard;
 	}
+	return nullptr;
 }
+
+void ADeck::DrawCard(TArray<ACard*> Cards)
+{
+	if (Cards.Num() > 0) {
+		Cards[0]->PlayDrawCardAnimation();
+		Cards.RemoveAt(0);
+		return;
+	}
+
+	GetWorldTimerManager().ClearTimer(TimerHandle);
+}
+
+void ADeck::DrawEachCardAfterDelay(TArray<ACard*> Cards, float DelayBetweenDraws)
+{
+	FTimerDelegate DrawDelegate = FTimerDelegate::CreateUObject(this, &ADeck::DrawCard, Cards);
+	GetWorldTimerManager().SetTimer(TimerHandle, DrawDelegate,DelayBetweenDraws,false,0.f);
+}
+
+
 

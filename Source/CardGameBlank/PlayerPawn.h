@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/Pawn.h"
+#include "Deck.h"
 #include "PlayerPawn.generated.h"
 
 class UCameraComponent;
@@ -28,6 +29,8 @@ public:
 
 	void OnClicked();
 
+	void DrawCard(int NumCardsToDraw);
+
 private:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Components", meta = (AllowPrivateAccess = "true"))
 	UCameraComponent* PlayerCamera;
@@ -38,8 +41,13 @@ private:
 	UPROPERTY(BlueprintReadOnly, BlueprintReadOnly, Category = "Components", meta = (AllowPrivateAccess = "true"))
 	UInteract* PlayerInteractComponent;
 
-	UPlayerHand* PlayerHand;
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Components", meta = (AllowPrivateAccess = "true"))
+	TSubclassOf<ADeck> DeckClass;
 
+
+	ADeck* PlayerDeck;
+	UPlayerHand* PlayerHand;
+	//ADeck* PlayerDeck;
 
 protected:
 	// Called when the game starts or when spawned
