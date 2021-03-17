@@ -71,10 +71,12 @@ void APlayerPawn::DrawCard(int NumCardsToDraw)
 		//UE_LOG(LogTemp, Warning, TEXT("Spawned Card Name: %s"), *SpawnedCard->GetName());
 		//SpawnedCard->ChangeName("New Name");
 
+
+
 		for (int i = 0; i < 2; i++) {
-			ACard* SpawnedCard = PlayerDeck->SpawnNewCard();
-			SpawnedCard->InitialiseAnim(i);
-			SpawnedCard->UpdateDrawCardAnimationEndLocation(1, 119484, 500.f + (i * 30.f), i);
+			//ACard* SpawnedCard = PlayerDeck->SpawnNewCard();
+			//SpawnedCard->InitialiseAnim(i);
+			//SpawnedCard->UpdateDrawCardAnimationEndLocation(1, 119484, 500.f + (i * 30.f), i);
 		}
 
 	}

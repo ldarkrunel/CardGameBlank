@@ -33,10 +33,9 @@ void ADeck::Tick(float DeltaTime)
 ACard* ADeck::SpawnNewCard()
 {
 	if (CardClass) {
-		if (!AnimUtil::PoolInitialised) {
-			AnimUtil::PoolInitialised = true;
-			AnimUtil::
-		}
+		//if (!AnimUtil::PoolInitialised) {
+		//	AnimUtil::PoolInitialised = true;
+		//}
 		SpawnedCard = GetWorld()->SpawnActor<ACard>(CardClass, GetTransform().GetLocation(), GetTransform().GetRotation().Rotator());
 		return SpawnedCard;
 	}

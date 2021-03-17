@@ -19,6 +19,7 @@ AnimUtil::AnimUtil()
 
 ULevelSequence* AnimUtil::GetAvaliableDrawCardAnim(ACard* Card)
 {
+	/*
 	if (!DrawAnimPool.IsEmpty()) {
 
 		ULevelSequence* LevelSequence;
@@ -28,10 +29,13 @@ ULevelSequence* AnimUtil::GetAvaliableDrawCardAnim(ACard* Card)
 		DrawAnimPool.Dequeue(LevelSequence);
 		return LevelSequence;
 	}
+	*/
 
-	ULevelSequence* LevelSequenceCopy = DuplicateObject(DrawAnim, Card);
+
+	//ULevelSequence* LevelSequenceCopy = DuplicateObject(DrawAnim, Card);
 	//reset level sequence anim back to default/start before returning it
-	return LevelSequenceCopy;
+
+	return nullptr;
 	//DrawAnimPool.Enqueue(LevelSequenceCopy);
 }
 
@@ -41,15 +45,15 @@ void AnimUtil::ReturnDrawCardAnimToPool(ULevelSequence* AnimToReturn)
 	//set anim to start/default before making inactive
 	//set to inactive
 
-	DrawAnimPool.Enqueue(AnimToReturn);
+	//DrawAnimPool.Enqueue(AnimToReturn);
 
 }
 
 
 void AnimUtil::InitialisePool(ULevelSequence* AnimToDuplicate)
 {
-	DrawAnim = AnimToDuplicate;
-	PoolInitialised = true;
+	//DrawAnim = AnimToDuplicate;
+	//PoolInitialised = true;
 }
 
 bool AnimUtil::UpdateLevelSequenceFloatKeyValue(ULevelSequence* LevelSequence, UObject* Object, UWorld* WorldContext,int ChannelNum, int FrameNum, float ModifiedValue)

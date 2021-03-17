@@ -34,8 +34,8 @@ void ACard::InitialiseAnim(int index)
 
 	LevelSequence = DuplicateObject(DrawCard_Anim,this);
 
-	if (!AnimUtil::PoolInitialised) 
-		AnimUtil::InitialisePool(DrawCard_Anim);
+	//if (!AnimUtil::PoolInitialised) 
+	//	AnimUtil::InitialisePool(DrawCard_Anim);
 
 	if (DrawCard_Anim && !SequencePlayer) {
 		if (index == 0)
@@ -68,8 +68,8 @@ void ACard::Initialize()
 	//move this to header. sequence actor will need to be garbage collected after it has finished animation.
 	ALevelSequenceActor* SequenceActor = nullptr;
 
-	if (!AnimUtil::PoolInitialised)
-		AnimUtil::InitialisePool(DrawCard_Anim);
+	//if (!AnimUtil::PoolInitialised)
+	//	AnimUtil::InitialisePool(DrawCard_Anim);
 
 	if (DrawCard_Anim && !SequencePlayer) {
 
