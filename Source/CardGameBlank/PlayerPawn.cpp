@@ -59,7 +59,7 @@ void APlayerPawn::SetupPlayerInputComponent(UInputComponent* PlayerInputComponen
 
 void APlayerPawn::OnClicked() 
 {
-	UE_LOG(LogTemp, Warning, TEXT("can i see this text?"));
+	UE_LOG(LogTemp, Warning, TEXT("On Clicked?"));
 }
 
 void APlayerPawn::DrawCard(int NumCardsToDraw)
@@ -67,9 +67,16 @@ void APlayerPawn::DrawCard(int NumCardsToDraw)
 
 	if (PlayerHand && PlayerDeck) {
 
-		ACard* SpawnedCard = PlayerDeck->SpawnNewCard();
-		SpawnedCard->UpdateDrawCardAnimationEndLocation(0, 0, 0.f);
-		//SpawnedCard->Name
+
+		//UE_LOG(LogTemp, Warning, TEXT("Spawned Card Name: %s"), *SpawnedCard->GetName());
+		//SpawnedCard->ChangeName("New Name");
+
+		for (int i = 0; i < 2; i++) {
+			ACard* SpawnedCard = PlayerDeck->SpawnNewCard();
+			SpawnedCard->InitialiseAnim(i);
+			SpawnedCard->UpdateDrawCardAnimationEndLocation(1, 119484, 500.f + (i * 30.f), i);
+		}
+
 	}
 
 	/*
@@ -85,7 +92,7 @@ void APlayerPawn::DrawCard(int NumCardsToDraw)
 
 		TArray<FVector> UpdatedCardPositionsInHand = PlayerHand->GetUpdatedCardPositionsInHand(PlayerCamera->GetComponentTransform().GetLocation());
 
-		CardsToDraw[0]->UpdateDrawCardAnimationEndLocation(2, 2, UpdatedCardPositionsInHand[UpdatedCardPositionsInHand.Num() - CardsToDraw.Num() + 0].Y);
+		//CardsToDraw[0]->UpdateDrawCardAnimationEndLocation(1, 119484, UpdatedCardPositionsInHand[UpdatedCardPositionsInHand.Num() - CardsToDraw.Num() + i].Y);
 
 
 		for (int i = 0; i < CardsToDraw.Num(); i++) {
@@ -95,5 +102,5 @@ void APlayerPawn::DrawCard(int NumCardsToDraw)
 		PlayerDeck->DrawEachCardAfterDelay(CardsToDraw, 0.3f);
 
 	}
-		*/
+	*/	
 }

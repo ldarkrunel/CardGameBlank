@@ -22,7 +22,15 @@ public:
 
 	void PlayDrawCardAnimation();
 
-	void UpdateDrawCardAnimationEndLocation(int Channel, int FrameNum, float ModifiedValue);
+	void UpdateDrawCardAnimationEndLocation(int Channel, int FrameNum, float ModifiedValue, int loopIndex);
+
+	void ChangeName(FString Name);
+
+	void InitialiseAnim(int index);
+
+	void Initialize();
+
+	FString GetNewName();
 
 
 private:
@@ -33,10 +41,21 @@ private:
 	ULevelSequence* DrawCard_Anim;
 
 	UPROPERTY(BlueprintReadOnly, BlueprintReadOnly, Category = "Animation", meta = (AllowPrivateAccess = "true"))
+	ULevelSequence* LevelSequence;
+
+	UPROPERTY(BlueprintReadOnly, BlueprintReadOnly, Category = "Animation", meta = (AllowPrivateAccess = "true"))
+	ULevelSequence* CurrentSequence;
+
+	UPROPERTY(BlueprintReadOnly, BlueprintReadOnly, Category = "Animation", meta = (AllowPrivateAccess = "true"))
 	ULevelSequencePlayer* SequencePlayer;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Animation", meta = (AllowPrivateAccess = "true"))
+	FString CardName = "Default";
 
 	UFUNCTION()
 	void OnCardDrawn();
+
+	
 
 
 protected:

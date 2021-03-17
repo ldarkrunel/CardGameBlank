@@ -15,45 +15,41 @@ AnimUtil::AnimUtil()
 {
 }
 
-void AnimUtil::DisplayLevelSequenceKeyChannels(ULevelSequence* LevelSequence, UObject* Object, UWorld* WorldContext) 
+
+
+ULevelSequence* AnimUtil::GetAvaliableDrawCardAnim(ACard* Card)
+{
+	if (!DrawAnimPool.IsEmpty()) {
+
+		ULevelSequence* LevelSequence;
+
+		//set animation to active
+		
+		DrawAnimPool.Dequeue(LevelSequence);
+		return LevelSequence;
+	}
+
+	ULevelSequence* LevelSequenceCopy = DuplicateObject(DrawAnim, Card);
+	//reset level sequence anim back to default/start before returning it
+	return LevelSequenceCopy;
+	//DrawAnimPool.Enqueue(LevelSequenceCopy);
+}
+
+void AnimUtil::ReturnDrawCardAnimToPool(ULevelSequence* AnimToReturn)
 {
 
-	UE_LOG(LogTemp, Warning, TEXT("1"));
-	if (LevelSequence && Object) {
-		FGuid Guid;
-		UE_LOG(LogTemp, Warning, TEXT("2"));
-		if (FindBinding(LevelSequence, Object, Guid, WorldContext)) {
+	//set anim to start/default before making inactive
+	//set to inactive
 
-			UMovieScene3DTransformTrack* MovieSceneTrack = LevelSequence->MovieScene->FindTrack<UMovieScene3DTransformTrack>(Guid);
-			UE_LOG(LogTemp, Warning, TEXT("3"));
-			if (MovieSceneTrack) {
-				TArray<UMovieSceneSection*> MovieSceneSections = MovieSceneTrack->GetAllSections();
+	DrawAnimPool.Enqueue(AnimToReturn);
 
-				if (MovieSceneSections.Num()) {
-					UMovieScene3DTransformSection* TransformSection = nullptr;
-					TransformSection = CastChecked<UMovieScene3DTransformSection>(MovieSceneSections[0]);
-					UE_LOG(LogTemp, Warning, TEXT("4"));
-					if (TransformSection) {
-						if (TransformSection->TryModify(true)) {
-							TArrayView<FMovieSceneFloatChannel*> Channels = TransformSection->GetChannelProxy().GetChannels<FMovieSceneFloatChannel>();
+}
 
-							for (int i = 0; i < Channels.Num(); i++) {
 
-								UE_LOG(LogTemp, Warning, TEXT("channel: %i"), i);
-
-								TMovieSceneChannelData<FMovieSceneFloatValue> data = Channels[i]->GetData();
-
-								for (auto value : data.GetValues()) {
-									UE_LOG(LogTemp, Warning, TEXT("value: %f"), value.Value);
-								}
-								UE_LOG(LogTemp, Warning, TEXT("................................"));
-							}
-						}
-					}
-				}
-			}
-		}
-	}
+void AnimUtil::InitialisePool(ULevelSequence* AnimToDuplicate)
+{
+	DrawAnim = AnimToDuplicate;
+	PoolInitialised = true;
 }
 
 bool AnimUtil::UpdateLevelSequenceFloatKeyValue(ULevelSequence* LevelSequence, UObject* Object, UWorld* WorldContext,int ChannelNum, int FrameNum, float ModifiedValue)
@@ -86,34 +82,73 @@ bool AnimUtil::UpdateLevelSequenceFloatKeyValue(ULevelSequence* LevelSequence, U
 	return false;
 }
 
+void AnimUtil::DisplayLevelSequenceKeyChannels(ULevelSequence* LevelSequence, UObject* Object, UWorld* WorldContext)
+{
+	if (LevelSequence && Object) {
+		FGuid Guid;
+		if (FindBinding(LevelSequence, Object, Guid, WorldContext)) {
+
+			UMovieScene3DTransformTrack* MovieSceneTrack = LevelSequence->MovieScene->FindTrack<UMovieScene3DTransformTrack>(Guid);
+			if (MovieSceneTrack) {
+				TArray<UMovieSceneSection*> MovieSceneSections = MovieSceneTrack->GetAllSections();
+
+				if (MovieSceneSections.Num()) {
+					UMovieScene3DTransformSection* TransformSection = nullptr;
+					TransformSection = CastChecked<UMovieScene3DTransformSection>(MovieSceneSections[0]);
+					if (TransformSection) {
+						if (TransformSection->TryModify(true)) {
+							TArrayView<FMovieSceneFloatChannel*> Channels = TransformSection->GetChannelProxy().GetChannels<FMovieSceneFloatChannel>();
+
+							for (int i = 0; i < Channels.Num(); i++) {
+
+								UE_LOG(LogTemp, Warning, TEXT("channel: %i"), i);
+
+								TMovieSceneChannelData<FMovieSceneFloatValue> data = Channels[i]->GetData();
+
+								TArrayView<FFrameNumber> times = data.GetTimes();
+								TArrayView<FMovieSceneFloatValue> values = data.GetValues();
+
+								for (int j = 0; j < times.Num(); j++) {
+									UE_LOG(LogTemp, Warning, TEXT("Frame Num: %i, Value: %f"), times[j].Value, values[j].Value);
+								}
+
+								UE_LOG(LogTemp, Warning, TEXT("................................"));
+							}
+						}
+					}
+				}
+			}
+		}
+	}
+}
+
 bool AnimUtil::FindBinding(ULevelSequence* LevelSequence, UObject* Object, FGuid& Guid, UWorld* WorldContext)
 {
 	if (LevelSequence && Object)
 	{
-		UE_LOG(LogTemp, Warning, TEXT("11"));
+
 		for (auto b : LevelSequence->MovieScene->GetBindings())
 		{
+
 			FGuid ObjectGuid = b.GetObjectGuid();
 			if (ObjectGuid.IsValid())
 			{
-				UE_LOG(LogTemp, Warning, TEXT("22"));
 				TArray<UObject*, TInlineAllocator<1>> Objects;
 				LevelSequence->LocateBoundObjects(ObjectGuid, WorldContext, Objects);
 				if (Objects.Num())
 				{
-					UE_LOG(LogTemp, Warning, TEXT("33"));
-
 					ACard* cardA = Cast<ACard>(Object);
 					ACard* CardB = Cast<ACard>(Objects[0]);
 
-					UE_LOG(LogTemp, Warning, TEXT("Card A Name: %s"), *cardA->GetName());
-					UE_LOG(LogTemp, Warning, TEXT("Card B Name: %s"), *CardB->GetName());
+					//UE_LOG(LogTemp, Warning, TEXT("Card A Name: %s"), *cardA->GetName());
+					//UE_LOG(LogTemp, Warning, TEXT("Card B Name: %s"), *CardB->GetName());
 
+					Guid = ObjectGuid;
+					return true;
 
 					if (Object == Objects[0])
 					{
 						UE_LOG(LogTemp, Warning, TEXT("44"));
-						UE_LOG(LogTemp, Warning, TEXT("getting here in static class?"));
 						Guid = ObjectGuid;
 						return true;
 					}

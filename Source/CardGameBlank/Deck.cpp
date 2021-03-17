@@ -4,6 +4,7 @@
 #include "Deck.h"
 #include "InputCoreTypes.h"
 #include "GameFramework/PlayerController.h"
+#include "AnimUtil.h"
 #include "Card.h"
 
 // Sets default values
@@ -32,6 +33,10 @@ void ADeck::Tick(float DeltaTime)
 ACard* ADeck::SpawnNewCard()
 {
 	if (CardClass) {
+		if (!AnimUtil::PoolInitialised) {
+			AnimUtil::PoolInitialised = true;
+			AnimUtil::
+		}
 		SpawnedCard = GetWorld()->SpawnActor<ACard>(CardClass, GetTransform().GetLocation(), GetTransform().GetRotation().Rotator());
 		return SpawnedCard;
 	}
