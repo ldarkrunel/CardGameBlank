@@ -33,19 +33,19 @@ public:
 
 private:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Components", meta = (AllowPrivateAccess = "true"))
-		UStaticMeshComponent* BaseMesh;
+	UStaticMeshComponent* BaseMesh;
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Animation", meta = (AllowPrivateAccess = "true"))
-		ULevelSequence* DrawCard_Anim;
+	ULevelSequence* DrawCard_Anim;
 
 	UPROPERTY(BlueprintReadOnly, BlueprintReadOnly, Category = "Animation", meta = (AllowPrivateAccess = "true"))
-		ULevelSequence* LevelSequence;
+	ULevelSequence* LevelSequence;
 
 	UPROPERTY(BlueprintReadOnly, BlueprintReadOnly, Category = "Animation", meta = (AllowPrivateAccess = "true"))
-		ALevelSequenceActor* SequenceActor = nullptr;
+	ALevelSequenceActor* SequenceActor = nullptr;
 
 	UPROPERTY(BlueprintReadOnly, BlueprintReadOnly, Category = "Animation", meta = (AllowPrivateAccess = "true"))
-		ULevelSequencePlayer* SequencePlayer;
+	ULevelSequencePlayer* SequencePlayer;
 
 	UFUNCTION()
 		void OnCardDrawn();

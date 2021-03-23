@@ -9,7 +9,6 @@
 #include "Kismet/GameplayStatics.h"
 #include "ECardState.h"
 #include "AnimationComponent.h"
-#include "AnimUtil.h"
 
 ACard::ACard()
 {
@@ -26,8 +25,13 @@ void ACard::BeginPlay()
 	Super::BeginPlay();
 
 	Initialize();
+	if (SequencePlayer) {
+		UE_LOG(LogTemp, Warning, TEXT("Sequence player initialized"));
+		SequencePlayer->OnFinished.AddDynamic(this, &ACard::OnCardDrawn);
+	}
+	else
+		UE_LOG(LogTemp, Warning, TEXT("Sequence player not initialized"));
 
-	SequencePlayer->OnFinished.AddDynamic(this, &ACard::OnCardDrawn);
 	AnimComponent = FindComponentByClass<UAnimationComponent>();
 
 }
@@ -41,10 +45,16 @@ void ACard::Initialize()
 
 	//Creates the sequence actor which will play the animation for the card.
 
+	if (DrawCard_Anim) {
+		UE_LOG(LogTemp, Warning, TEXT("Anim init"));
+	}
+	else
+		UE_LOG(LogTemp, Warning, TEXT("Anim not init"));
+
 	if (DrawCard_Anim && !SequencePlayer) {
-
+	
 		//LevelSequence = test->AnimUtility()->GetAvaliableDrawCardAnim(this);
-
+		UE_LOG(LogTemp, Warning, TEXT("creating player"));
 		SequencePlayer = ULevelSequencePlayer::CreateLevelSequencePlayer(GetWorld(), LevelSequence, FMovieSceneSequencePlaybackSettings(), OUT SequenceActor);
 	}
 
@@ -52,6 +62,7 @@ void ACard::Initialize()
 
 	if (SequencePlayer) {
 
+		UE_LOG(LogTemp, Warning, TEXT("bind card"));
 		LevelSequence = SequenceActor->GetSequence();
 		TArray<FMovieSceneBinding> Bindings = LevelSequence->GetMovieScene()->GetBindings();
 
