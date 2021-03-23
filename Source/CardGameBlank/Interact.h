@@ -8,7 +8,6 @@
 #include "Card.h"
 #include "Interact.generated.h"
 
-
 class UInputComponent;
 class AHighlightBlock;
 
@@ -20,36 +19,39 @@ struct FCurrentActorDetails
 	float YPosition;
 };
 
-UCLASS( ClassGroup=(Custom), meta=(BlueprintSpawnableComponent) )
+UCLASS(ClassGroup = (Custom), meta = (BlueprintSpawnableComponent))
 class CARDGAMEBLANK_API UInteract : public UActorComponent
 {
 	GENERATED_BODY()
 
-public:	
+public:
 	// Sets default values for this component's properties
 	UInteract();
-	void SetUpInputComponent(UInputComponent* PlayerInputComponent);
+
+	void PerformRayCastFromMouse();
 
 private:
 
 	FCurrentActorDetails CurrentActor;
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Block", meta = (AllowPrivateAccess = "true"))
-	TSubclassOf<AHighlightBlock> BlockClass;
+		TSubclassOf<AHighlightBlock> BlockClass;
 
 	UPROPERTY(BlueprintReadOnly, BlueprintReadOnly, Category = "Block", meta = (AllowPrivateAccess = "true"))
-	AHighlightBlock* Block;
+		AHighlightBlock* Block;
 
-	void PerformRayCastFromMouse();
+	UPROPERTY(BlueprintReadOnly, BlueprintReadOnly, Category = "PlayerController", meta = (AllowPrivateAccess = "true"))
+		APlayerController* PC;
+
 	void TraceForBlock(const FVector& Start, const FVector& End, bool bDrawDebugHelpers);
 
 protected:
 	// Called when the game starts
 	virtual void BeginPlay() override;
 
-public:	
+public:
 	// Called every frame
 	virtual void TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction) override;
 
-		
+
 };

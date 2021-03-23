@@ -12,8 +12,8 @@ UCLASS()
 class CARDGAMEBLANK_API ADeck : public AActor
 {
 	GENERATED_BODY()
-	
-public:	
+
+public:
 	// Sets default values for this actor's properties
 	ADeck();
 
@@ -21,7 +21,7 @@ public:
 
 	ACard* SpawnNewCard();
 
-	void DrawEachCardAfterDelay(TArray<ACard*> Cards, float DelayBetweenDraws);
+	void DrawEachCardAfterDelay(TArray<ACard*>& Cards, float DelayBetweenDraws);
 
 private:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Components", meta = (AllowPrivateAccess = "true"))
@@ -39,7 +39,10 @@ private:
 	UPROPERTY(BlueprintReadOnly, BlueprintReadOnly, Category = "Timer", meta = (AllowPrivateAccess = "true"))
 	FTimerHandle TimerHandle;
 
-	void DrawCard(TArray<ACard*> Cards);
+	UPROPERTY(BlueprintReadOnly, BlueprintReadOnly, Category = "Timer", meta = (AllowPrivateAccess = "true"))
+	TArray<ACard*> CardsToDraw;
+
+	void DrawCard();
 
 protected:
 	// Called when the game starts or when spawned
