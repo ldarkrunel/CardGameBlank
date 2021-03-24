@@ -4,13 +4,14 @@
 #include "Deck.h"
 #include "InputCoreTypes.h"
 #include "GameFramework/PlayerController.h"
-#include "AnimUtil.h"
+//#include "AnimUtil.h"
+#include "ECardState.h"
 #include "Card.h"
 
 // Sets default values
 ADeck::ADeck()
 {
- 	// Set this actor to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
+	// Set this actor to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
 
 	BaseMesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("Base Mesh"));
@@ -21,7 +22,6 @@ ADeck::ADeck()
 void ADeck::BeginPlay()
 {
 	Super::BeginPlay();
-	
 }
 
 // Called every frame
@@ -33,30 +33,29 @@ void ADeck::Tick(float DeltaTime)
 ACard* ADeck::SpawnNewCard()
 {
 	if (CardClass) {
-		//if (!AnimUtil::PoolInitialised) {
-		//	AnimUtil::PoolInitialised = true;
-		//}
 		SpawnedCard = GetWorld()->SpawnActor<ACard>(CardClass, GetTransform().GetLocation(), GetTransform().GetRotation().Rotator());
+		SpawnedCard->State = ECardState::DRAWN;
 		return SpawnedCard;
 	}
 	return nullptr;
 }
 
-void ADeck::DrawCard(TArray<ACard*> Cards)
+void ADeck::DrawCard()
 {
-	if (Cards.Num() > 0) {
-		Cards[0]->PlayDrawCardAnimation();
-		Cards.RemoveAt(0);
+	if (CardsToDraw.Num() > 0) {
+		CardsToDraw[0]->PlayDrawCardAnimation();
+		CardsToDraw.RemoveAt(0);
 		return;
 	}
 
 	GetWorldTimerManager().ClearTimer(TimerHandle);
 }
 
-void ADeck::DrawEachCardAfterDelay(TArray<ACard*> Cards, float DelayBetweenDraws)
+void ADeck::DrawEachCardAfterDelay(TArray<ACard*>& Cards, float DelayBetweenDraws)
 {
-	FTimerDelegate DrawDelegate = FTimerDelegate::CreateUObject(this, &ADeck::DrawCard, Cards);
-	GetWorldTimerManager().SetTimer(TimerHandle, DrawDelegate,DelayBetweenDraws,false,0.f);
+	CardsToDraw = Cards;
+
+	GetWorldTimerManager().SetTimer(TimerHandle, this, &ADeck::DrawCard, DelayBetweenDraws, true, 0.f);
 }
 
 

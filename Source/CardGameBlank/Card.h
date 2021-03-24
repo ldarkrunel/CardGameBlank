@@ -4,34 +4,32 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/Actor.h"
+#include "ECardState.h"
 #include "Card.generated.h"
 
 class ULevelSequence;
 class ULevelSequencePlayer;
+class ALevelSequenceActor;
+class UAnimationComponent;
 
 UCLASS()
 class CARDGAMEBLANK_API ACard : public AActor
 {
 	GENERATED_BODY()
-	
-public:	
+
+public:
 	// Sets default values for this actor's properties
 	ACard();
+
+	ECardState State;
+
+	UAnimationComponent* AnimComponent;
 
 	FVector GetSize();
 
 	void PlayDrawCardAnimation();
 
-	void UpdateDrawCardAnimationEndLocation(int Channel, int FrameNum, float ModifiedValue, int loopIndex);
-
-	void ChangeName(FString Name);
-
-	void InitialiseAnim(int index);
-
-	void Initialize();
-
-	FString GetNewName();
-
+	void UpdateDrawCardAnimationEndLocation(int Channel, int FrameNum, float ModifiedValue);
 
 private:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Components", meta = (AllowPrivateAccess = "true"))
@@ -44,26 +42,24 @@ private:
 	ULevelSequence* LevelSequence;
 
 	UPROPERTY(BlueprintReadOnly, BlueprintReadOnly, Category = "Animation", meta = (AllowPrivateAccess = "true"))
-	ULevelSequence* CurrentSequence;
+	ALevelSequenceActor* SequenceActor = nullptr;
 
 	UPROPERTY(BlueprintReadOnly, BlueprintReadOnly, Category = "Animation", meta = (AllowPrivateAccess = "true"))
 	ULevelSequencePlayer* SequencePlayer;
 
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Animation", meta = (AllowPrivateAccess = "true"))
-	FString CardName = "Default";
-
 	UFUNCTION()
-	void OnCardDrawn();
+		void OnCardDrawn();
 
-	
-
+	void Initialize();
 
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
 
-public:	
+public:
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
-
 };
+
+
+

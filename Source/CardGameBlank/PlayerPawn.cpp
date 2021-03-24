@@ -5,12 +5,15 @@
 #include "Card.h"
 #include "PlayerHand.h"
 #include "Camera/CameraComponent.h"
+#include "CardGameInstance.h"
+#include "AnimUtility.h"
+#include "Interact.h"
 #include "Kismet/GameplayStatics.h"
 
 // Sets default values
 APlayerPawn::APlayerPawn()
 {
- 	// Set this pawn to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
+	// Set this pawn to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
 
 	PlayerCamera = CreateDefaultSubobject<UCameraComponent>(TEXT("Base Mesh"));
@@ -18,6 +21,7 @@ APlayerPawn::APlayerPawn()
 
 	PlayerHandSpawnLocation = CreateDefaultSubobject<USceneComponent>(TEXT("Player Hand"));
 	PlayerHandSpawnLocation->SetupAttachment(PlayerCamera);
+
 }
 
 // Called when the game starts or when spawned
@@ -25,14 +29,14 @@ void APlayerPawn::BeginPlay()
 {
 	Super::BeginPlay();
 
-
 	PlayerHand = FindComponentByClass<UPlayerHand>();
+	PlayerInteractComponent = FindComponentByClass<UInteract>();
 
 	TArray<AActor*> decksFound;
 
 	UGameplayStatics::GetAllActorsOfClass(GetWorld(), DeckClass, decksFound);
 
-	if (decksFound.Num() > 0) 
+	if (decksFound.Num() > 0)
 		PlayerDeck = Cast<ADeck>(decksFound[0]);
 }
 
@@ -43,10 +47,8 @@ void APlayerPawn::Tick(float DeltaTime)
 
 	bool KeyPressed = GetWorld()->GetFirstPlayerController()->WasInputKeyJustPressed(EKeys::E);
 
-	if (KeyPressed) {
-		//UE_LOG(LogTemp, Warning, TEXT("E key was just pressed"));
+	if (KeyPressed)
 		DrawCard(1);
-	}
 }
 
 // Called to bind functionality to input
@@ -57,31 +59,14 @@ void APlayerPawn::SetupPlayerInputComponent(UInputComponent* PlayerInputComponen
 	PlayerInputComponent->BindAction("LeftClick", IE_Pressed, this, &APlayerPawn::OnClicked);
 }
 
-void APlayerPawn::OnClicked() 
+void APlayerPawn::OnClicked()
 {
-	UE_LOG(LogTemp, Warning, TEXT("On Clicked?"));
+	if (PlayerInteractComponent)
+		PlayerInteractComponent->PerformRayCastFromMouse();
 }
 
 void APlayerPawn::DrawCard(int NumCardsToDraw)
 {
-
-	if (PlayerHand && PlayerDeck) {
-
-
-		//UE_LOG(LogTemp, Warning, TEXT("Spawned Card Name: %s"), *SpawnedCard->GetName());
-		//SpawnedCard->ChangeName("New Name");
-
-
-
-		for (int i = 0; i < 2; i++) {
-			//ACard* SpawnedCard = PlayerDeck->SpawnNewCard();
-			//SpawnedCard->InitialiseAnim(i);
-			//SpawnedCard->UpdateDrawCardAnimationEndLocation(1, 119484, 500.f + (i * 30.f), i);
-		}
-
-	}
-
-	/*
 	if (PlayerHand && PlayerDeck) {
 
 		TArray<ACard*> CardsToDraw;
@@ -91,18 +76,16 @@ void APlayerPawn::DrawCard(int NumCardsToDraw)
 			PlayerHand->AddCardToHand(SpawnedCard);
 			CardsToDraw.Add(SpawnedCard);
 		}
-
-		TArray<FVector> UpdatedCardPositionsInHand = PlayerHand->GetUpdatedCardPositionsInHand(PlayerCamera->GetComponentTransform().GetLocation());
-
-		//CardsToDraw[0]->UpdateDrawCardAnimationEndLocation(1, 119484, UpdatedCardPositionsInHand[UpdatedCardPositionsInHand.Num() - CardsToDraw.Num() + i].Y);
-
+		
+		TArray<FVector> UpdatedCardPositionsInHand = PlayerHand->GetUpdatedCardPositionsInHand(PlayerHandSpawnLocation->GetComponentTransform().GetLocation());
 
 		for (int i = 0; i < CardsToDraw.Num(); i++) {
-			CardsToDraw[i]->UpdateDrawCardAnimationEndLocation(2, 2, UpdatedCardPositionsInHand[UpdatedCardPositionsInHand.Num() - CardsToDraw.Num() + i].Y);
+			CardsToDraw[i]->UpdateDrawCardAnimationEndLocation(1, 119484, UpdatedCardPositionsInHand[UpdatedCardPositionsInHand.Num() - CardsToDraw.Num() + i].Y);
+			
 		}
 
-		PlayerDeck->DrawEachCardAfterDelay(CardsToDraw, 0.3f);
-
+		PlayerDeck->DrawEachCardAfterDelay(CardsToDraw, 0.2f);
+		PlayerHand->UpdateCardPositions(UpdatedCardPositionsInHand);
+		
 	}
-	*/	
 }

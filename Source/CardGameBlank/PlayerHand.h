@@ -9,20 +9,26 @@
 class ACard;
 class UCameraComponent;
 
-UCLASS( ClassGroup=(Custom), meta=(BlueprintSpawnableComponent) )
+struct FCardAnimPositionData
+{
+	FVector InitialLocation;
+	FVector DestinationLocation;
+};
+
+UCLASS(ClassGroup = (Custom), meta = (BlueprintSpawnableComponent))
 class CARDGAMEBLANK_API UPlayerHand : public UActorComponent
 {
 	GENERATED_BODY()
 
-public:	
+public:
 	// Sets default values for this component's properties
 	UPlayerHand();
-
-	void SpawnHand(FVector SpawnLocation, FRotator CameraRot);
 
 	void AddCardToHand(ACard* CardToAdd);
 
 	TArray<FVector> GetUpdatedCardPositionsInHand(FVector HandCentrePoint);
+
+	void UpdateCardPositions(TArray<FVector> UpdatedCardPositions);
 
 private:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Card", meta = (AllowPrivateAccess = "true"))
@@ -44,15 +50,18 @@ private:
 	float MaxDistanceFromOtherCards = 4.f;
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "HandSpawn", meta = (AllowPrivateAccess = "true"))
-	float DepthDifference = 0.04f;
+	float DepthDifference = 0.01f;
 
-	void UpdateCardPositions();
+	FTimerHandle TimerHandle;
+	TArray<ACard*> CardsToLerpToDest;
+
+	void AnimateCard();
 
 protected:
 	// Called when the game starts
 	virtual void BeginPlay() override;
 
-public:	
+public:
 	// Called every frame
 	virtual void TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction) override;
 };

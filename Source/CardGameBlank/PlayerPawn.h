@@ -21,6 +21,7 @@ class CARDGAMEBLANK_API APlayerPawn : public APawn
 public:
 	// Sets default values for this pawn's properties
 	APlayerPawn();
+
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
 
@@ -30,6 +31,7 @@ public:
 	void OnClicked();
 
 	void DrawCard(int NumCardsToDraw);
+
 
 private:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Components", meta = (AllowPrivateAccess = "true"))
@@ -44,10 +46,8 @@ private:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Components", meta = (AllowPrivateAccess = "true"))
 	TSubclassOf<ADeck> DeckClass;
 
-
 	ADeck* PlayerDeck;
 	UPlayerHand* PlayerHand;
-	//ADeck* PlayerDeck;
 
 protected:
 	// Called when the game starts or when spawned

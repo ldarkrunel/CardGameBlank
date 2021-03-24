@@ -24,14 +24,15 @@ void UInteract::BeginPlay()
 {
 	Super::BeginPlay();
 
-	
+	PC = Cast<APlayerController>(GetWorld()->GetFirstPlayerController());
+
+
 	if (BlockClass) {
 		FVector SpawnLocation{ 0,0,0 };
 		FRotator SpawnRotation{ 0,0,0 };
 
 		Block = GetWorld()->SpawnActor<AHighlightBlock>(BlockClass, SpawnLocation, SpawnRotation);
 	}
-
 }
 
 
@@ -40,8 +41,7 @@ void UInteract::TickComponent(float DeltaTime, ELevelTick TickType, FActorCompon
 {
 	Super::TickComponent(DeltaTime, TickType, ThisTickFunction);
 
-
-	if (APlayerController* PC = Cast<APlayerController>(GetWorld()->GetFirstPlayerController())) {
+	if (PC) {
 		FVector Start, Dir, End;
 		PC->DeprojectMousePositionToWorld(Start, Dir);
 		End = Start + (Dir * 8000.0f); //change to a distance variable
@@ -50,17 +50,12 @@ void UInteract::TickComponent(float DeltaTime, ELevelTick TickType, FActorCompon
 
 }
 
-void UInteract::SetUpInputComponent(UInputComponent* PlayerInputComponent)
-{
-	if (PlayerInputComponent) {
-		UE_LOG(LogTemp, Error, TEXT("Input component found on: %s"), *GetOwner()->GetName());
-		PlayerInputComponent->BindAction("LeftClick", IE_Pressed, this, &UInteract::PerformRayCastFromMouse);
-	}
-}
-
 void UInteract::PerformRayCastFromMouse()
 {
-	UE_LOG(LogTemp, Warning, TEXT("clicking?"));
+	FVector Start, Dir, End;
+	PC->DeprojectMousePositionToWorld(Start, Dir);
+
+	UE_LOG(LogTemp, Warning, TEXT("Performing raycast from mouse position"));
 }
 
 void UInteract::TraceForBlock(const FVector& Start, const FVector& End, bool bDrawDebugHelpers)
@@ -74,8 +69,6 @@ void UInteract::TraceForBlock(const FVector& Start, const FVector& End, bool bDr
 	}
 
 	FVector_NetQuantize HitPoint = HitResult.ImpactPoint;
-
-	//UE_LOG(LogTemp, Warning, TEXT("x pos: %f, y pos: %f"), HitPoint.X, HitPoint.Y);
 
 	if (HitResult.Actor.IsValid())
 	{
@@ -97,11 +90,6 @@ void UInteract::TraceForBlock(const FVector& Start, const FVector& End, bool bDr
 		if (Block) {
 			Block->SetActorLocation(FVector{ FlooredXPoint,FlooredYPoint,43 });
 		}
-
-
-	}
-	else {
-		//UE_LOG(LogTemp, Warning, TEXT("Hitting nothing"));
 	}
 }
 
