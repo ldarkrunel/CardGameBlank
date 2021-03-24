@@ -5,9 +5,8 @@
 #include "GameFramework/PlayerController.h"
 #include "DrawDebugHelpers.h"
 #include "Math/UnrealMathUtility.h"
+#include "IInteractable.h"
 #include "HighlightBlock.h"
-
-
 
 // Sets default values for this component's properties
 UInteract::UInteract()
@@ -25,7 +24,6 @@ void UInteract::BeginPlay()
 	Super::BeginPlay();
 
 	PC = Cast<APlayerController>(GetWorld()->GetFirstPlayerController());
-
 
 	if (BlockClass) {
 		FVector SpawnLocation{ 0,0,0 };
@@ -45,7 +43,10 @@ void UInteract::TickComponent(float DeltaTime, ELevelTick TickType, FActorCompon
 		FVector Start, Dir, End;
 		PC->DeprojectMousePositionToWorld(Start, Dir);
 		End = Start + (Dir * 8000.0f); //change to a distance variable
-		TraceForBlock(Start, End, false);
+
+		TraceForInteractable(Start, End, false);
+
+		//TraceForBlock(Start, End, false);
 	}
 
 }
@@ -55,9 +56,82 @@ void UInteract::PerformRayCastFromMouse()
 	FVector Start, Dir, End;
 	PC->DeprojectMousePositionToWorld(Start, Dir);
 
+	//SelectInteractable(Start, End, false);
+
 	UE_LOG(LogTemp, Warning, TEXT("Performing raycast from mouse position"));
 }
 
+void UInteract::TraceForInteractable(const FVector& Start, const FVector& End, bool bDrawDebugHelpers)
+{
+	FHitResult HitResult;
+	GetWorld()->LineTraceSingleByChannel(HitResult, Start, End, ECC_Visibility);
+	if (bDrawDebugHelpers)
+	{
+		DrawDebugLine(GetWorld(), Start, HitResult.Location, FColor::Red);
+		DrawDebugSolidBox(GetWorld(), HitResult.Location, FVector(20.0f), FColor::Red);
+	}
+
+	if (!HitResult.Actor.IsValid()) {
+		if (CurrentlyHighlightedInteractable != nullptr) {
+			CurrentlyHighlightedInteractable->OnHoverEnd();
+			CurrentlyHighlightedInteractable = nullptr;
+		}
+		return;
+	}
+
+	FVector_NetQuantize HitPoint = HitResult.ImpactPoint;
+
+	IInteractable* CurrentInteractable = Cast<IInteractable>(HitResult.Actor);
+
+	if (CurrentInteractable) {
+		if (CurrentlyHighlightedInteractable == nullptr) {
+			CurrentInteractable->OnHoverStart();
+			CurrentlyHighlightedInteractable = CurrentInteractable;
+		}
+		else if (CurrentInteractable != CurrentlyHighlightedInteractable) {
+			CurrentlyHighlightedInteractable->OnHoverEnd();
+			CurrentlyHighlightedInteractable = CurrentInteractable;
+			CurrentlyHighlightedInteractable->OnHoverStart();
+		}
+	}
+}
+
+void UInteract::SelectInteractable(const FVector& Start, const FVector& End, bool bDrawDebugHelpers)
+{
+	FHitResult HitResult;
+	GetWorld()->LineTraceSingleByChannel(HitResult, Start, End, ECC_Visibility);
+	if (bDrawDebugHelpers)
+	{
+		DrawDebugLine(GetWorld(), Start, HitResult.Location, FColor::Red);
+		DrawDebugSolidBox(GetWorld(), HitResult.Location, FVector(20.0f), FColor::Red);
+	}
+
+	if (!HitResult.Actor.IsValid()) {
+		if (CurrentlySelectedInteractable != nullptr) {
+			CurrentlySelectedInteractable->OnSelectEnd();
+			CurrentlySelectedInteractable = nullptr;
+		}
+		return;
+	}
+
+	FVector_NetQuantize HitPoint = HitResult.ImpactPoint;
+
+	IInteractable* CurrentInteractable = Cast<IInteractable>(HitResult.Actor);
+
+	if (CurrentInteractable) {
+		if (CurrentlySelectedInteractable == nullptr) {
+			CurrentlySelectedInteractable->OnSelectStart();
+			CurrentlySelectedInteractable = CurrentInteractable;
+		}
+		else if (CurrentInteractable != CurrentlySelectedInteractable) {
+			CurrentlySelectedInteractable->OnSelectEnd();
+			CurrentlySelectedInteractable = CurrentInteractable;
+			CurrentlySelectedInteractable->OnSelectStart();
+		}
+	}
+}
+
+/*
 void UInteract::TraceForBlock(const FVector& Start, const FVector& End, bool bDrawDebugHelpers)
 {
 	FHitResult HitResult;
@@ -92,5 +166,6 @@ void UInteract::TraceForBlock(const FVector& Start, const FVector& End, bool bDr
 		}
 	}
 }
+*/
 
 
