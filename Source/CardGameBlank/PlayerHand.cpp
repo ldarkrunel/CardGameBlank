@@ -34,7 +34,6 @@ TArray<FVector> UPlayerHand::GetUpdatedCardPositionsInHand(FVector CenterHandPoi
 	//calculates the ideal locations for num cards in hand and returns them in an array
 
 	TArray<FVector> CardPositionsInHand;
-
 	if (CardClass) {
 		float StartPoint = CenterHandPoint.Y;
 		float localDistanceBetweenCards = MaxDistanceFromOtherCards;

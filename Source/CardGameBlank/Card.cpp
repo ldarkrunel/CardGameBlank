@@ -4,8 +4,8 @@
 #include "LevelSequence.h"
 #include "LevelSequencePlayer.h"
 #include "LevelSequenceActor.h"
-//#include "CardGameInstance.h"
-//#include "AnimUtility.h"
+#include "CardGameInstance.h"
+#include "AnimUtility.h"
 #include "Kismet/GameplayStatics.h"
 #include "ECardState.h"
 #include "AnimationComponent.h"
@@ -38,23 +38,16 @@ void ACard::BeginPlay()
 
 void ACard::Initialize()
 {
-	//UCardGameInstance* test = Cast<UCardGameInstance>(UGameplayStatics::GetGameInstance(GetWorld()));
+	UCardGameInstance* test = Cast<UCardGameInstance>(UGameplayStatics::GetGameInstance(GetWorld()));
 
-	//if (!test->AnimUtility()->PoolInitialised)
-	//	test->AnimUtility()->InitialisePool(DrawCard_Anim);
+	if (!test->AnimUtility()->PoolInitialised)
+		test->AnimUtility()->InitialisePool(DrawCard_Anim);
 
 	//Creates the sequence actor which will play the animation for the card.
 
-	if (DrawCard_Anim) {
-		UE_LOG(LogTemp, Warning, TEXT("Anim init"));
-	}
-	else
-		UE_LOG(LogTemp, Warning, TEXT("Anim not init"));
-
 	if (DrawCard_Anim && !SequencePlayer) {
 	
-		//LevelSequence = test->AnimUtility()->GetAvaliableDrawCardAnim(this);
-		UE_LOG(LogTemp, Warning, TEXT("creating player"));
+		LevelSequence = test->AnimUtility()->GetAvaliableDrawCardAnim(this);
 		SequencePlayer = ULevelSequencePlayer::CreateLevelSequencePlayer(GetWorld(), LevelSequence, FMovieSceneSequencePlaybackSettings(), OUT SequenceActor);
 	}
 
@@ -62,7 +55,6 @@ void ACard::Initialize()
 
 	if (SequencePlayer) {
 
-		UE_LOG(LogTemp, Warning, TEXT("bind card"));
 		LevelSequence = SequenceActor->GetSequence();
 		TArray<FMovieSceneBinding> Bindings = LevelSequence->GetMovieScene()->GetBindings();
 
@@ -80,7 +72,7 @@ void ACard::OnCardDrawn()
 {
 	State = ECardState::IDLE;
 
-	/*
+	
 	UCardGameInstance* test = Cast<UCardGameInstance>(UGameplayStatics::GetGameInstance(GetWorld()));
 	if (test)
 	{
@@ -88,7 +80,7 @@ void ACard::OnCardDrawn()
 		test->AnimUtility()->ReturnDrawCardAnimToPool(LevelSequence);
 		test->AnimUtility()->PoolSize++;
 	}
-	*/
+	
 
 	if (SequenceActor) {
 		//destroy the actor that is created in the level that plays the card animation
@@ -106,12 +98,16 @@ void ACard::PlayDrawCardAnimation()
 //this could be moved to the animationcomponent inside card
 void ACard::UpdateDrawCardAnimationEndLocation(int Channel, int FrameNum, float ModifiedValue)
 {
-	//UCardGameInstance* test = Cast<UCardGameInstance>(UGameplayStatics::GetGameInstance(GetWorld()));
+	UCardGameInstance* test = Cast<UCardGameInstance>(UGameplayStatics::GetGameInstance(GetWorld()));
 
 	//updates card animation end key location so that each card goes to the desired point in player viewpoint
 
-	//if (test)
-	//	test->AnimUtility()->UpdateLevelSequenceFloatKeyValue(LevelSequence, this, GetWorld(), Channel, FrameNum, ModifiedValue);
+	if (test)
+	{
+		test->AnimUtility()->UpdateLevelSequenceFloatKeyValue(LevelSequence, this, GetWorld(), Channel, FrameNum, ModifiedValue);
+		//test->AnimUtility()->DisplayLevelSequenceKeyChannels(LevelSequence, this, GetWorld());
+	}
+
 }
 
 // Called every frame

@@ -5,8 +5,8 @@
 #include "Card.h"
 #include "PlayerHand.h"
 #include "Camera/CameraComponent.h"
-//#include "CardGameInstance.h"
-//#include "AnimUtility.h"
+#include "CardGameInstance.h"
+#include "AnimUtility.h"
 #include "Interact.h"
 #include "Kismet/GameplayStatics.h"
 
@@ -48,7 +48,7 @@ void APlayerPawn::Tick(float DeltaTime)
 	bool KeyPressed = GetWorld()->GetFirstPlayerController()->WasInputKeyJustPressed(EKeys::E);
 
 	if (KeyPressed)
-		DrawCard(3);
+		DrawCard(1);
 }
 
 // Called to bind functionality to input
@@ -76,14 +76,16 @@ void APlayerPawn::DrawCard(int NumCardsToDraw)
 			PlayerHand->AddCardToHand(SpawnedCard);
 			CardsToDraw.Add(SpawnedCard);
 		}
-
+		
 		TArray<FVector> UpdatedCardPositionsInHand = PlayerHand->GetUpdatedCardPositionsInHand(PlayerHandSpawnLocation->GetComponentTransform().GetLocation());
 
 		for (int i = 0; i < CardsToDraw.Num(); i++) {
 			CardsToDraw[i]->UpdateDrawCardAnimationEndLocation(1, 119484, UpdatedCardPositionsInHand[UpdatedCardPositionsInHand.Num() - CardsToDraw.Num() + i].Y);
+			
 		}
 
 		PlayerDeck->DrawEachCardAfterDelay(CardsToDraw, 0.2f);
 		PlayerHand->UpdateCardPositions(UpdatedCardPositionsInHand);
+		
 	}
 }
