@@ -18,6 +18,9 @@ ACard::ACard()
 
 	BaseMesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("Base Mesh"));
 	RootComponent = BaseMesh;
+
+	CardBackMesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("Back Detail Mesh"));
+	CardBackMesh->SetupAttachment(BaseMesh);
 }
 
 // Called when the game starts or when spawned
@@ -111,8 +114,8 @@ void ACard::UpdateDrawCardAnimationEndLocation(int Channel, int FrameNum, float 
 
 	if (test)
 	{
-		test->AnimUtility()->UpdateLevelSequenceFloatKeyValue(LevelSequence, this, GetWorld(), Channel, FrameNum, ModifiedValue);
-		//test->AnimUtility()->DisplayLevelSequenceKeyChannels(LevelSequence, this, GetWorld());
+		//test->AnimUtility()->UpdateLevelSequenceFloatKeyValue(LevelSequence, this, GetWorld(), Channel, FrameNum, ModifiedValue);
+		test->AnimUtility()->DisplayLevelSequenceKeyChannels(LevelSequence, this, GetWorld());
 	}
 }
 
