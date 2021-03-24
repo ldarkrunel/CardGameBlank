@@ -5,6 +5,7 @@
 #include "CoreMinimal.h"
 #include "GameFramework/Actor.h"
 #include "ECardState.h"
+#include "IInteractable.h"
 #include "Card.generated.h"
 
 class ULevelSequence;
@@ -13,7 +14,7 @@ class ALevelSequenceActor;
 class UAnimationComponent;
 
 UCLASS()
-class CARDGAMEBLANK_API ACard : public AActor
+class CARDGAMEBLANK_API ACard : public AActor, public IInteractable
 {
 	GENERATED_BODY()
 
@@ -30,6 +31,12 @@ public:
 	void PlayDrawCardAnimation();
 
 	void UpdateDrawCardAnimationEndLocation(int Channel, int FrameNum, float ModifiedValue);
+
+	virtual void OnHoverStart() override;
+	virtual void OnHoverEnd() override;
+
+	virtual void OnSelectStart() override;
+	virtual void OnSelectEnd() override;
 
 private:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Components", meta = (AllowPrivateAccess = "true"))
@@ -48,7 +55,7 @@ private:
 	ULevelSequencePlayer* SequencePlayer;
 
 	UFUNCTION()
-		void OnCardDrawn();
+	void OnCardDrawn();
 
 	void Initialize();
 

@@ -8,6 +8,7 @@
 #include "AnimUtility.h"
 #include "Kismet/GameplayStatics.h"
 #include "ECardState.h"
+#include "IInteractable.h"
 #include "AnimationComponent.h"
 
 ACard::ACard()
@@ -25,15 +26,21 @@ void ACard::BeginPlay()
 	Super::BeginPlay();
 
 	Initialize();
-	if (SequencePlayer) {
-		UE_LOG(LogTemp, Warning, TEXT("Sequence player initialized"));
+
+	if (SequencePlayer) 
 		SequencePlayer->OnFinished.AddDynamic(this, &ACard::OnCardDrawn);
-	}
-	else
-		UE_LOG(LogTemp, Warning, TEXT("Sequence player not initialized"));
 
 	AnimComponent = FindComponentByClass<UAnimationComponent>();
 
+
+	//UClass* test = UInteractable::StaticClass();
+
+	//interface example
+
+	if (this->Implements<UInteractable>()) {
+		IInteractable* test = Cast<IInteractable>(this);
+		test->OnHoverEnd();
+	}
 }
 
 void ACard::Initialize()
@@ -107,6 +114,25 @@ void ACard::UpdateDrawCardAnimationEndLocation(int Channel, int FrameNum, float 
 		test->AnimUtility()->UpdateLevelSequenceFloatKeyValue(LevelSequence, this, GetWorld(), Channel, FrameNum, ModifiedValue);
 		//test->AnimUtility()->DisplayLevelSequenceKeyChannels(LevelSequence, this, GetWorld());
 	}
+}
+
+void ACard::OnHoverStart()
+{
+
+}
+
+void ACard::OnHoverEnd()
+{
+	UE_LOG(LogTemp, Warning, TEXT("hover has just ended"));
+}
+
+void ACard::OnSelectStart()
+{
+
+}
+
+void ACard::OnSelectEnd()
+{
 
 }
 
