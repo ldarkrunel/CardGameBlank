@@ -2,7 +2,7 @@
 
 
 #include "Board.h"
-
+#include "IInteractable.h"
 // Sets default values
 ABoard::ABoard()
 {
@@ -11,6 +11,26 @@ ABoard::ABoard()
 
 	Board = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("Base Mesh"));
 	RootComponent = Board;
+
+}
+
+void ABoard::OnSelectStart()
+{
+
+}
+
+void ABoard::OnSelectEnd()
+{
+
+}
+
+void ABoard::OnHoverStart()
+{
+
+}
+
+void ABoard::OnHoverEnd()
+{
 
 }
 

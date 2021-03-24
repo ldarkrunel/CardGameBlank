@@ -4,16 +4,23 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/Actor.h"
+#include "IInteractable.h"
 #include "Board.generated.h"
 
 UCLASS()
-class CARDGAMEBLANK_API ABoard : public AActor
+class CARDGAMEBLANK_API ABoard : public AActor, public IInteractable
 {
 	GENERATED_BODY()
 	
 public:	
 	// Sets default values for this actor's properties
 	ABoard();
+
+	virtual void OnSelectStart() override;
+	virtual void OnSelectEnd() override;
+
+	virtual void OnHoverStart() override;
+	virtual void OnHoverEnd() override;
 
 private:
 
