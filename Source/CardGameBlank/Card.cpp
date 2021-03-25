@@ -78,6 +78,11 @@ void ACard::Initialize()
 	}
 }
 
+void ACard::HighlightActor(bool bIsHighlighted)
+{
+
+}
+
 void ACard::OnCardDrawn()
 {
 	State = ECardState::IDLE;

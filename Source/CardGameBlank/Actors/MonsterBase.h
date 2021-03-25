@@ -3,27 +3,38 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "GameFramework/Pawn.h"
+#include "GameFramework/Actor.h"
+#include "CardGameBlank/IInteractable.h"
 #include "MonsterBase.generated.h"
 
 UCLASS()
-class CARDGAMEBLANK_API AMonsterBase : public APawn
+class CARDGAMEBLANK_API AMonsterBase : public AActor, public IInteractable
 {
 	GENERATED_BODY()
 
-public:
-	// Sets default values for this pawn's properties
-	AMonsterBase();
+private:
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Components", meta = (AllowPrivateAccess = "true"))
+	class UCapsuleComponent* CapsuleComp;
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Components", meta = (AllowPrivateAccess = "true"))
+	UStaticMeshComponent* BaseMesh;
+
+	void HighlightActor(bool bIsHighlighted);
 
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
 
 public:	
+	// Sets default values for this pawn's properties
+	AMonsterBase();
+
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
 
-	// Called to bind functionality to input
-	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
+	virtual void OnHoverStart() override;
+	virtual void OnHoverEnd() override;
+
+	virtual void OnSelectStart() override;
+	virtual void OnSelectEnd() override;
 
 };
