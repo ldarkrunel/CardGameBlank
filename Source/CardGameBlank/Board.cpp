@@ -26,12 +26,12 @@ void ABoard::OnSelectEnd()
 
 void ABoard::OnHoverStart()
 {
-
+	UE_LOG(LogTemp, Warning, TEXT("Board is being highlighted"));
 }
 
 void ABoard::OnHoverEnd()
 {
-
+	UE_LOG(LogTemp, Warning, TEXT("Board has stopped being highlighted"));
 }
 
 // Called when the game starts or when spawned

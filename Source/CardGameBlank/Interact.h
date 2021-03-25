@@ -10,6 +10,7 @@
 
 class UInputComponent;
 class AHighlightBlock;
+class IInteractable;
 
 struct FCurrentActorDetails
 {
@@ -34,16 +35,22 @@ private:
 
 	FCurrentActorDetails CurrentActor;
 
+	IInteractable* CurrentlyHighlightedInteractable = nullptr;
+	IInteractable* CurrentlySelectedInteractable = nullptr;
+
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Block", meta = (AllowPrivateAccess = "true"))
-		TSubclassOf<AHighlightBlock> BlockClass;
+	TSubclassOf<AHighlightBlock> BlockClass;
 
 	UPROPERTY(BlueprintReadOnly, BlueprintReadOnly, Category = "Block", meta = (AllowPrivateAccess = "true"))
-		AHighlightBlock* Block;
+	AHighlightBlock* Block;
 
 	UPROPERTY(BlueprintReadOnly, BlueprintReadOnly, Category = "PlayerController", meta = (AllowPrivateAccess = "true"))
-		APlayerController* PC;
+	APlayerController* PC;
 
 	void TraceForBlock(const FVector& Start, const FVector& End, bool bDrawDebugHelpers);
+	void TraceForInteractable(const FVector& Start, const FVector& End, bool bDrawDebugHelpers);
+
+	void SelectInteractable(const FVector& Start, const FVector& End, bool bDrawDebugHelpers);
 
 protected:
 	// Called when the game starts
