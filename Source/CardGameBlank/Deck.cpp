@@ -33,7 +33,7 @@ ACard* ADeck::SpawnNewCard()
 {
 	if (CardClass) {
 		SpawnedCard = GetWorld()->SpawnActor<ACard>(CardClass, GetTransform().GetLocation(), GetTransform().GetRotation().Rotator());
-		SpawnedCard->State = ECardState::DRAWN;
+		SpawnedCard->State = ECardState::ANIMATING;
 		return SpawnedCard;
 	}
 	return nullptr;

@@ -6,6 +6,7 @@
 #include "Components/ActorComponent.h"
 #include "AnimationComponent.generated.h"
 
+DECLARE_DYNAMIC_MULTICAST_DELEGATE(FOnAnimationFinished);
 
 UCLASS(ClassGroup = (Custom), meta = (BlueprintSpawnableComponent))
 class CARDGAMEBLANK_API UAnimationComponent : public UActorComponent
@@ -17,15 +18,19 @@ public:
 	UAnimationComponent();
 
 	bool IsAnimating = false;
+	bool ReverseAnim = false;
 
 	UPROPERTY(BlueprintReadOnly, BlueprintReadOnly, Category = "Location", meta = (AllowPrivateAccess = "true"))
-		FVector StartLocation;
+	FVector StartLocation;
 
 	UPROPERTY(BlueprintReadOnly, BlueprintReadOnly, Category = "Location", meta = (AllowPrivateAccess = "true"))
-		FVector DestLocation;
+	FVector DestLocation;
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Animation", meta = (AllowPrivateAccess = "true"))
-		float AnimSpeed;
+	float AnimSpeed;
+
+	//UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Animation", meta = (AllowPrivateAccess = "true"))
+	//FOnAnimationFinished OnAnimFinished;
 
 	float Alpha = 0.f;
 
@@ -34,6 +39,8 @@ public:
 	void CreateAnimation(FVector InitalPosition, FVector Destination, float AnimSpeed);
 
 	void Start();
+
+	void Reverse();
 
 
 private:

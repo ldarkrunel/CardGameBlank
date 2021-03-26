@@ -28,7 +28,7 @@ public:
 
 	TArray<FVector> GetUpdatedCardPositionsInHand(FVector HandCentrePoint);
 
-	void UpdateCardPositions(TArray<FVector> UpdatedCardPositions);
+	void UpdateCardPositions(TArray<FVector> UpdatedCardPositions, float animDuration);
 
 private:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Card", meta = (AllowPrivateAccess = "true"))

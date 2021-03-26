@@ -21,6 +21,9 @@ ACard::ACard()
 
 	CardBackMesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("Back Detail Mesh"));
 	CardBackMesh->SetupAttachment(BaseMesh);
+
+	CardFrontMesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("Front Detail Mesh"));
+	CardFrontMesh->SetupAttachment(BaseMesh);
 }
 
 // Called when the game starts or when spawned
@@ -35,15 +38,7 @@ void ACard::BeginPlay()
 
 	AnimComponent = FindComponentByClass<UAnimationComponent>();
 
-
 	//UClass* test = UInteractable::StaticClass();
-
-	//interface example
-
-	if (this->Implements<UInteractable>()) {
-		IInteractable* test = Cast<IInteractable>(this);
-		test->OnHoverEnd();
-	}
 }
 
 void ACard::Initialize()
@@ -87,7 +82,6 @@ void ACard::OnCardDrawn()
 {
 	State = ECardState::IDLE;
 
-	
 	UCardGameInstance* test = Cast<UCardGameInstance>(UGameplayStatics::GetGameInstance(GetWorld()));
 	if (test)
 	{
@@ -124,14 +118,38 @@ void ACard::UpdateDrawCardAnimationEndLocation(int Channel, int FrameNum, float 
 	}
 }
 
+void ACard::UpdateDrawCardAnimationEndLocation(TArray<FLevelSequenceFloatData> LevelSequenceData)
+{
+	UCardGameInstance* test = Cast<UCardGameInstance>(UGameplayStatics::GetGameInstance(GetWorld()));
+
+	//updates card animation end key location so that each card goes to the desired point in player viewpoint
+
+	if (test)
+	{
+		test->AnimUtility()->UpdateLevelSequenceFloatKeyValues(LevelSequence, this, GetWorld(), LevelSequenceData);
+		//test->AnimUtility()->DisplayLevelSequenceKeyChannels(LevelSequence, this, GetWorld());
+	}
+}
+
 void ACard::OnHoverStart()
 {
+	FVector MovedVector = { 20.0f,0,20.0f };
 
+	if (State == ECardState::IDLE)
+		AnimComponent->CreateAnimation(this->GetActorLocation() + MovedVector, 3.0f);
+
+	AnimComponent->Start();
+	//this->AddActorLocalOffset(this->GetActorLocation() + MovedVector, false, nullptr, ETeleportType::None);
+
+
+	//AnimComponent->CreateAnimation(this->Transform)
+	UE_LOG(LogTemp, Warning, TEXT("Card hover has just Started"));
 }
 
 void ACard::OnHoverEnd()
 {
-	UE_LOG(LogTemp, Warning, TEXT("hover has just ended"));
+	AnimComponent->Reverse();
+	UE_LOG(LogTemp, Warning, TEXT("Card hover has just ended"));
 }
 
 void ACard::OnSelectStart()

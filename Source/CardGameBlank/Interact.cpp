@@ -55,8 +55,9 @@ void UInteract::PerformRayCastFromMouse()
 {
 	FVector Start, Dir, End;
 	PC->DeprojectMousePositionToWorld(Start, Dir);
+	End = Start + (Dir * 8000.0f); //change to a distance variable
 
-	//SelectInteractable(Start, End, false);
+	SelectInteractable(Start, End, false);
 
 	UE_LOG(LogTemp, Warning, TEXT("Performing raycast from mouse position"));
 }
@@ -120,7 +121,7 @@ void UInteract::SelectInteractable(const FVector& Start, const FVector& End, boo
 
 	if (CurrentInteractable) {
 		if (CurrentlySelectedInteractable == nullptr) {
-			CurrentlySelectedInteractable->OnSelectStart();
+			CurrentInteractable->OnSelectStart();
 			CurrentlySelectedInteractable = CurrentInteractable;
 		}
 		else if (CurrentInteractable != CurrentlySelectedInteractable) {

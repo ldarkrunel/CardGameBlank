@@ -9,6 +9,21 @@
 class ULevelSequence;
 class ACard;
 
+struct FLevelSequenceFloatData
+{
+	int Channel;
+	int FrameNum;
+	float ModifiedValue;
+};
+
+UENUM()
+enum class ELevelSequenceEditType : uint8
+{
+	LOCATION,
+	ROTATION,
+	SCALE
+};
+
 UCLASS(ClassGroup = (Custom), meta = (BlueprintSpawnableComponent))
 class CARDGAMEBLANK_API UAnimUtility : public USceneComponent
 {
@@ -25,14 +40,19 @@ public:
 	int PoolSize = 0;
 
 	bool FindBinding(ULevelSequence* LevelSequence, UObject* Object, FGuid& Guid, UWorld* WorldContext);
-	bool UpdateLevelSequenceFloatKeyValue(ULevelSequence* LevelSequence, UObject* Object, UWorld* WorldContext, int ChannelNum, int FrameNum, float ModifiedValue);
+	bool UpdateLevelSequenceFloatKeyValues(ULevelSequence* LevelSequence, UObject* Object, UWorld* WorldContext, TArray<FLevelSequenceFloatData> LevelSequenceFloatData);
+	bool UpdateSingleLevelSequenceFloatKeyValue(ULevelSequence* LevelSequence, UObject* Object, UWorld* WorldContext, int Channel, int FrameNum, float ModifiedValue);
 	void DisplayLevelSequenceKeyChannels(ULevelSequence* LevelSequence, UObject* Object, UWorld* WorldContext);
 
 	ULevelSequence* GetAvaliableDrawCardAnim(ACard* Card);
 	void ReturnDrawCardAnimToPool(ULevelSequence* AnimToReturn);
 	void InitialisePool(ULevelSequence* AnimToDuplicate);
 
+	TArray<FLevelSequenceFloatData> GetLevelSequenceEditData(ELevelSequenceEditType type, int FrameNum, FVector ModifiedValue);
+
 	void CleanUp();
+
+
 
 protected:
 	// Called when the game starts

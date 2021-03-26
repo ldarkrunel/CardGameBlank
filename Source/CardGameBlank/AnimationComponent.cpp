@@ -16,6 +16,7 @@ void UAnimationComponent::CreateAnimation(FVector destination, float Speed)
 	StartLocation = GetOwner()->GetTransform().GetLocation();
 	DestLocation = destination;
 	AnimSpeed = Speed;
+	ReverseAnim = false;
 }
 
 void UAnimationComponent::CreateAnimation(FVector InitalPosition, FVector Destination, float Speed)
@@ -23,10 +24,18 @@ void UAnimationComponent::CreateAnimation(FVector InitalPosition, FVector Destin
 	StartLocation = InitalPosition;
 	DestLocation = Destination;
 	AnimSpeed = Speed;
+
 }
 
 void UAnimationComponent::Start()
 {
+	ReverseAnim = false;
+	IsAnimating = true;
+}
+
+void UAnimationComponent::Reverse()
+{
+	ReverseAnim = true;
 	IsAnimating = true;
 }
 
@@ -34,18 +43,26 @@ void UAnimationComponent::AnimateComponent(float DeltaTime)
 {
 	FVector CurrentLocation;
 
-	Alpha += DeltaTime * AnimSpeed;
+	if (!ReverseAnim)
+		Alpha += DeltaTime * AnimSpeed;
+	else
+		Alpha -= DeltaTime * AnimSpeed;
 
 	if (Alpha > 1)
 		Alpha = 1.0f;
+	else if (Alpha < 0)
+		Alpha = 0.f;
 
-	CurrentLocation = FMath::Lerp(StartLocation, DestLocation, EaseInOut(Alpha));
+	CurrentLocation = FMath::Lerp(StartLocation, DestLocation, Alpha);
 
 	GetOwner()->SetActorLocation(CurrentLocation);
 
-	if (Alpha >= 1) {
+	if (Alpha >= 1 || Alpha <= 0) {
 		IsAnimating = false;
-		Alpha = 0.f;
+		if (ReverseAnim)
+			Alpha = 0.f;
+		else
+			Alpha = 1.f;
 	}
 }
 
@@ -58,6 +75,8 @@ float UAnimationComponent::EaseInOut(float t)
 void UAnimationComponent::BeginPlay()
 {
 	Super::BeginPlay();
+
+	TScriptDelegate<FWeakObjectPtr> AnimFinished;
 }
 
 // Called every frame

@@ -6,7 +6,7 @@ UENUM()
 enum class ECardState : uint8
 {
 	IDLE,
-	DRAWN,
+	ANIMATING,
 	HIGHLIGHTED,
 	SELECTED
 };

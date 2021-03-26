@@ -70,7 +70,38 @@ void UAnimUtility::InitialisePool(ULevelSequence* AnimToDuplicate)
 	PoolInitialised = true;
 }
 
-bool UAnimUtility::UpdateLevelSequenceFloatKeyValue(ULevelSequence* LevelSequence, UObject* Object, UWorld* WorldContext, int ChannelNum, int FrameNum, float ModifiedValue)
+TArray<FLevelSequenceFloatData> UAnimUtility::GetLevelSequenceEditData(ELevelSequenceEditType type, int FrameNum, FVector ModifiedValue)
+{
+	TArray<FLevelSequenceFloatData> LevelSequenceEditDataArray;
+
+	FLevelSequenceFloatData dataX;
+	FLevelSequenceFloatData dataY;
+	FLevelSequenceFloatData dataZ;
+
+	if (type == ELevelSequenceEditType::LOCATION) {
+		dataX = FLevelSequenceFloatData{ 0,FrameNum,ModifiedValue.X };
+		dataY = FLevelSequenceFloatData{ 1,FrameNum,ModifiedValue.Y };
+		dataZ = FLevelSequenceFloatData{ 2,FrameNum,ModifiedValue.Z };
+	}
+	else if (type == ELevelSequenceEditType::ROTATION) {
+		dataX = FLevelSequenceFloatData{ 3,FrameNum,ModifiedValue.X };
+		dataY = FLevelSequenceFloatData{ 4,FrameNum,ModifiedValue.Y };
+		dataZ = FLevelSequenceFloatData{ 5,FrameNum,ModifiedValue.Z };
+	}
+	else {
+		dataX = FLevelSequenceFloatData{ 6,FrameNum,ModifiedValue.X };
+		dataY = FLevelSequenceFloatData{ 7,FrameNum,ModifiedValue.Y };
+		dataZ = FLevelSequenceFloatData{ 8,FrameNum,ModifiedValue.Z };
+	}
+
+	LevelSequenceEditDataArray.Add(dataX);
+	LevelSequenceEditDataArray.Add(dataY);
+	LevelSequenceEditDataArray.Add(dataZ);
+
+	return LevelSequenceEditDataArray;
+}
+
+bool UAnimUtility::UpdateLevelSequenceFloatKeyValues(ULevelSequence* LevelSequence, UObject* Object, UWorld* WorldContext, TArray<FLevelSequenceFloatData> LevelSequenceFloatData)
 {
 	if (LevelSequence && Object) {
 		FGuid Guid;
@@ -84,12 +115,44 @@ bool UAnimUtility::UpdateLevelSequenceFloatKeyValue(ULevelSequence* LevelSequenc
 				if (MovieSceneSections.Num()) {
 					UMovieScene3DTransformSection* TransformSection = nullptr;
 					TransformSection = CastChecked<UMovieScene3DTransformSection>(MovieSceneSections[0]);
-
 					if (TransformSection) {
 						if (TransformSection->TryModify(true)) {
 							TArrayView<FMovieSceneFloatChannel*> Channels = TransformSection->GetChannelProxy().GetChannels<FMovieSceneFloatChannel>();
 
-							Channels[ChannelNum]->GetData().UpdateOrAddKey(FrameNum, FMovieSceneFloatValue(ModifiedValue));
+							for (FLevelSequenceFloatData data : LevelSequenceFloatData) {
+								Channels[data.Channel]->GetData().UpdateOrAddKey(data.FrameNum, FMovieSceneFloatValue(data.ModifiedValue));
+							}
+
+							return true;
+						}
+					}
+				}
+			}
+		}
+	}
+	return false;
+}
+
+bool UAnimUtility::UpdateSingleLevelSequenceFloatKeyValue(ULevelSequence* LevelSequence, UObject* Object, UWorld* WorldContext, int Channel, int FrameNum, float ModifiedValue)
+{
+	if (LevelSequence && Object) {
+		FGuid Guid;
+		if (FindBinding(LevelSequence, Object, Guid, WorldContext)) {
+
+			UMovieScene3DTransformTrack* MovieSceneTrack = LevelSequence->MovieScene->FindTrack<UMovieScene3DTransformTrack>(Guid);
+
+			if (MovieSceneTrack) {
+				TArray<UMovieSceneSection*> MovieSceneSections = MovieSceneTrack->GetAllSections();
+
+				if (MovieSceneSections.Num()) {
+					UMovieScene3DTransformSection* TransformSection = nullptr;
+					TransformSection = CastChecked<UMovieScene3DTransformSection>(MovieSceneSections[0]);
+					if (TransformSection) {
+						if (TransformSection->TryModify(true)) {
+							TArrayView<FMovieSceneFloatChannel*> Channels = TransformSection->GetChannelProxy().GetChannels<FMovieSceneFloatChannel>();
+
+							Channels[Channel]->GetData().UpdateOrAddKey(FrameNum, FMovieSceneFloatValue(ModifiedValue));
+
 							return true;
 						}
 					}

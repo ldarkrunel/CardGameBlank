@@ -60,19 +60,19 @@ TArray<FVector> UPlayerHand::GetUpdatedCardPositionsInHand(FVector CenterHandPoi
 	return CardPositionsInHand;
 }
 
-void UPlayerHand::UpdateCardPositions(TArray<FVector> DestinationCardPositions)
+void UPlayerHand::UpdateCardPositions(TArray<FVector> DestinationCardPositions, float AnimDuration)
 {
 	for (int i = 0; i < CardsInHand.Num(); i++) {
 		if (CardsInHand[i]->State == ECardState::IDLE) {
 
 			FVector CardLocation = CardsInHand[i]->GetTransform().GetLocation();
 
-			CardsInHand[i]->AnimComponent->CreateAnimation(FVector{ DestinationCardPositions[i].X - (i * DepthDifference), DestinationCardPositions[i].Y,CardLocation.Z }, 0.5f);
+			CardsInHand[i]->AnimComponent->CreateAnimation(FVector{ DestinationCardPositions[i].X, DestinationCardPositions[i].Y,CardLocation.Z }, 0.5f);
 			CardsToLerpToDest.Add(CardsInHand[i]);
 		}
 	}
 
-	GetOwner()->GetWorldTimerManager().SetTimer(TimerHandle, this, &UPlayerHand::AnimateCard, 0.2f, true, 0.5f);
+	GetOwner()->GetWorldTimerManager().SetTimer(TimerHandle, this, &UPlayerHand::AnimateCard, AnimDuration / CardsInHand.Num(), true, 0.5f);
 }
 
 void UPlayerHand::AnimateCard()

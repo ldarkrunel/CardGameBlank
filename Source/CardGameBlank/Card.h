@@ -12,6 +12,7 @@ class ULevelSequence;
 class ULevelSequencePlayer;
 class ALevelSequenceActor;
 class UAnimationComponent;
+struct FLevelSequenceFloatData;
 
 UCLASS()
 class CARDGAMEBLANK_API ACard : public AActor, public IInteractable
@@ -31,6 +32,7 @@ public:
 	void PlayDrawCardAnimation();
 
 	void UpdateDrawCardAnimationEndLocation(int Channel, int FrameNum, float ModifiedValue);
+	void UpdateDrawCardAnimationEndLocation(TArray<FLevelSequenceFloatData> LevelSequenceData);
 
 	virtual void OnHoverStart() override;
 	virtual void OnHoverEnd() override;
@@ -38,12 +40,19 @@ public:
 	virtual void OnSelectStart() override;
 	virtual void OnSelectEnd() override;
 
+
+
+	
+
 private:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Components", meta = (AllowPrivateAccess = "true"))
 	UStaticMeshComponent* BaseMesh;
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Components", meta = (AllowPrivateAccess = "true"))
 	UStaticMeshComponent* CardBackMesh;
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Components", meta = (AllowPrivateAccess = "true"))
+	UStaticMeshComponent* CardFrontMesh;
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Animation", meta = (AllowPrivateAccess = "true"))
 	ULevelSequence* DrawCard_Anim;

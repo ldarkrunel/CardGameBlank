@@ -12,6 +12,7 @@ class UCapsuleComponent;
 class UInputComponent;
 class UInteract;
 class UPlayerHand;
+class ULevelSequence;
 
 UCLASS()
 class CARDGAMEBLANK_API APlayerPawn : public APawn
@@ -38,7 +39,10 @@ private:
 	UCameraComponent* PlayerCamera;
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Components", meta = (AllowPrivateAccess = "true"))
-	USceneComponent* PlayerHandSpawnLocation;
+	USceneComponent* PlayerHandCentreLocation;
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Components", meta = (AllowPrivateAccess = "true"))
+	USceneComponent* PlayerCardSpawnLocation;
 
 	UPROPERTY(BlueprintReadOnly, BlueprintReadOnly, Category = "Components", meta = (AllowPrivateAccess = "true"))
 	UInteract* PlayerInteractComponent;
@@ -46,8 +50,13 @@ private:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Components", meta = (AllowPrivateAccess = "true"))
 	TSubclassOf<ADeck> DeckClass;
 
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Components", meta = (AllowPrivateAccess = "true"))
+	ULevelSequence* DrawAnim;
+
 	ADeck* PlayerDeck;
 	UPlayerHand* PlayerHand;
+
+	void UpdatePlayerDrawCardAnimLocations();
 
 protected:
 	// Called when the game starts or when spawned
